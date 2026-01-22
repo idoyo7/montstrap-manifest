@@ -5,7 +5,7 @@ metadata:
   namespace: wedding-invitation
 spec:
   hosts:
-  - we.makgol.com
+  - us.makgol.com
   gateways:
   - istio-system/makgol-gateway
   http:
