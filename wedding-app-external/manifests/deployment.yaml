@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wedding-invitation-external-deployment
+  namespace: wedding-invitation-external
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: wedding-invitation-external
+  template:
+    metadata:
+      labels:
+        app: wedding-invitation-external
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: wedding-invitation-external
+                topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: wedding-invitation-external-container
+          image: montkim9/invi2:latest
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "2"
+              memory: "512Mi"
+          env:
+            - name: NEXT_PUBLIC_ENABLE_NEXT_IMAGE_OPTIMIZATION
+              value: "true"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 1
+
+          ports:
+            - containerPort: 3000
