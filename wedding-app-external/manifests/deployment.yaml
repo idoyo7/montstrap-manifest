@@ -30,7 +30,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       containers:
         - name: wedding-invitation-external-container
-          image: montkim9/invi2:519e5b
+          image: montkim9/invi2:d140ec
           resources:
             requests:
               cpu: "250m"
