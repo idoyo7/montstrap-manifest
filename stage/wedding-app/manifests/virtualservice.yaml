@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: wedding-invitation-virtualservice
+  namespace: wedding-invitation
+spec:
+  hosts:
+  - we.makgol.com
+  gateways:
+  - istio-system/makgol-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: wedding-invitation-service
+        port:
+          number: 80
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
