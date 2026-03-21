@@ -5,9 +5,9 @@ metadata:
   namespace: wedding-invitation-external
 spec:
   hosts:
-  - us.makgol.com
+  - us.montkim.com
   gateways:
-  - istio-system/makgol-gateway
+  - istio-system/montkim-gateway
   http:
   - match:
     - uri:
