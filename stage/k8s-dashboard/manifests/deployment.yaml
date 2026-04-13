@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-dashboard-deployment
+  namespace: k8s-dashboard
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: k8s-dashboard
+  template:
+    metadata:
+      labels:
+        app: k8s-dashboard
+    spec:
+      automountServiceAccountToken: true
+      serviceAccountName: k8s-dashboard-explorer
+      containers:
+        - name: dashboard
+          image: montkim9/k8s-dashboard:ffa369
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /awsops
+              port: 3000
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /awsops
+              port: 3000
+            periodSeconds: 30
+          startupProbe:
+            httpGet:
+              path: /awsops
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 3
+          ports:
+            - containerPort: 3000
+        - name: steampipe
+          image: turbot/steampipe:latest
+          command: ["steampipe", "service", "start", "--foreground", "--database-listen", "network"]
+          volumeMounts:
+            - name: steampipe-config
+              mountPath: /home/steampipe/.steampipe/config
+          ports:
+            - containerPort: 9193
+          env:
+            - name: STEAMPIPE_DATABASE_PASSWORD
+              value: "steampipe"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: steampipe-config
+          configMap:
+            name: steampipe-config
