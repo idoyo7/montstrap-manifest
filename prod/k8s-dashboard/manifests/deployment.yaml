@@ -19,6 +19,7 @@ spec:
       labels:
         app: k8s-dashboard
     spec:
+      automountServiceAccountToken: true
       serviceAccountName: k8s-dashboard-explorer
       containers:
         - name: dashboard
@@ -51,6 +52,9 @@ spec:
         - name: steampipe
           image: turbot/steampipe:latest
           command: ["steampipe", "service", "start", "--foreground", "--database-listen", "network"]
+          volumeMounts:
+            - name: steampipe-config
+              mountPath: /home/steampipe/.steampipe/config
           ports:
             - containerPort: 9193
           env:
@@ -63,3 +67,7 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+      volumes:
+        - name: steampipe-config
+          configMap:
+            name: steampipe-config

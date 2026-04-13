@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: steampipe-config
+  namespace: k8s-dashboard
+data:
+  kubernetes.spc: |
+    connection "kubernetes" {
+      plugin = "kubernetes"
+    }
