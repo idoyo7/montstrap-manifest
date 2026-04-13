@@ -22,7 +22,7 @@ spec:
       serviceAccountName: k8s-dashboard
       containers:
         - name: dashboard
-          image: montkim9/k8s-dashboard:latest
+          image: montkim9/k8s-dashboard:68781a
           resources:
             requests:
               cpu: "100m"
