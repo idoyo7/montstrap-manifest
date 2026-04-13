@@ -50,7 +50,7 @@ spec:
           ports:
             - containerPort: 3000
         - name: steampipe
-          image: turbot/steampipe:latest
+          image: montkim9/steampipe-k8s:latest
           command: ["steampipe", "service", "start", "--foreground", "--database-listen", "network"]
           volumeMounts:
             - name: steampipe-config
