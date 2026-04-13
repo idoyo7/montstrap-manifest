@@ -19,7 +19,7 @@ spec:
       labels:
         app: k8s-dashboard
     spec:
-      serviceAccountName: k8s-dashboard
+      serviceAccountName: k8s-dashboard-explorer
       containers:
         - name: dashboard
           image: montkim9/k8s-dashboard:ffa369
