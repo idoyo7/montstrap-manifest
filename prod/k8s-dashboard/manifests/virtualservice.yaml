@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: k8s-dashboard-virtualservice
+  namespace: istio-system
+spec:
+  hosts:
+    - k8s.makgol.com
+  gateways:
+    - istio-system/makgol-gateway
+
+  http:
+    - name: k8s-dashboard-route
+      match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: k8s-dashboard-service.k8s-dashboard.svc.cluster.local
+            port:
+              number: 80
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 10s
+      timeout: 30s
