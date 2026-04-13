@@ -6,5 +6,6 @@ metadata:
 data:
   kubernetes.spc: |
     connection "kubernetes" {
-      plugin = "kubernetes"
+      plugin       = "kubernetes"
+      config_paths = []
     }
