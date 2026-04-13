@@ -54,7 +54,8 @@ spec:
           command: ["steampipe", "service", "start", "--foreground", "--database-listen", "network"]
           volumeMounts:
             - name: steampipe-config
-              mountPath: /home/steampipe/.steampipe/config
+              mountPath: /home/steampipe/.steampipe/config/kubernetes.spc
+              subPath: kubernetes.spc
           ports:
             - containerPort: 9193
           env:
