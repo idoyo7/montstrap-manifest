@@ -6,4 +6,4 @@ resources:
   - virtualservice.yaml
 images:
   - name: idoyo7/nextra-blog
-    newTag: d8e6a2
+    newTag: 82905a
