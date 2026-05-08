@@ -23,7 +23,7 @@ spec:
       serviceAccountName: k8s-dashboard-explorer
       containers:
         - name: dashboard
-          image: montkim9/k8s-dashboard:aedcea
+          image: montkim9/k8s-dashboard:9adf28
           resources:
             requests:
               cpu: "250m"
@@ -50,7 +50,7 @@ spec:
           ports:
             - containerPort: 3000
         - name: steampipe
-          image: montkim9/steampipe-k8s:aedcea
+          image: montkim9/steampipe-k8s:9adf28
           command: ["steampipe", "service", "start", "--foreground", "--database-listen", "network"]
           volumeMounts:
             - name: steampipe-config
