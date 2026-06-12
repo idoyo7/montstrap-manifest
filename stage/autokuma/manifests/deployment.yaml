@@ -22,18 +22,9 @@ spec:
         - name: autokuma
           image: ghcr.io/bigboot/autokuma:2.0.0
           env:
+            # 내부 인증은 비활성화됨(Keycloak SSO가 유일한 게이트) — 계정 불필요
             - name: AUTOKUMA__KUMA__URL
               value: http://kuma-uptime-kuma.monitoring.svc:3001
-            - name: AUTOKUMA__KUMA__USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: autokuma-credentials
-                  key: username
-            - name: AUTOKUMA__KUMA__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: autokuma-credentials
-                  key: password
             - name: AUTOKUMA__KUBERNETES__ENABLED
               value: "true"
             - name: AUTOKUMA__DOCKER__ENABLED
