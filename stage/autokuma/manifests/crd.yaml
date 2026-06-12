@@ -5,15 +5,12 @@ metadata:
 spec:
   group: autokuma.bigboot.dev
   names:
-    categories: []
     kind: KumaEntity
     plural: kumaentities
-    shortNames: []
     singular: kumaentity
   scope: Namespaced
   versions:
-  - additionalPrinterColumns: []
-    name: v1
+  - name: v1
     schema:
       openAPIV3Schema:
         description: Auto-generated derived type for KumaEntitySpec via `CustomResource`
@@ -32,4 +29,3 @@ spec:
         type: object
     served: true
     storage: true
-    subresources: {}
