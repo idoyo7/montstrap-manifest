@@ -18,6 +18,9 @@ spec:
     metadata:
       labels:
         app: nextra
+      annotations:
+        # OTel Node.js auto-instrumentation (중앙 CR: monitoring/mont-instrumentation)
+        instrumentation.opentelemetry.io/inject-nodejs: "monitoring/mont-instrumentation"
     spec:
       affinity:
         podAntiAffinity:

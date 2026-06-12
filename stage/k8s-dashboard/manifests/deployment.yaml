@@ -18,6 +18,10 @@ spec:
     metadata:
       labels:
         app: k8s-dashboard
+      annotations:
+        # OTel Node.js auto-instrumentation (멀티컨테이너 → dashboard 컨테이너만 대상)
+        instrumentation.opentelemetry.io/inject-nodejs: "monitoring/mont-instrumentation"
+        instrumentation.opentelemetry.io/container-names: "dashboard"
     spec:
       automountServiceAccountToken: true
       serviceAccountName: k8s-dashboard-explorer
