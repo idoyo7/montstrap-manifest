@@ -1,0 +1,12 @@
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: victoria-metrics-stage
+  namespace: monitoring
+spec:
+  config:
+    type: http
+    name: victoria-metrics vmui (stage)
+    url: https://mon.makgol.com/select/0/vmui/
+    interval: 60
+    max_retries: 3

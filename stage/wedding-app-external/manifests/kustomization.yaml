@@ -4,6 +4,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - virtualservice.yaml
+  - monitor.yaml
 images:
   - name: montkim9/invi2
     newTag: d140ec

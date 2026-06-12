@@ -1,0 +1,12 @@
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: jekyll-stage
+  namespace: jekyll
+spec:
+  config:
+    type: http
+    name: jekyll blog (stage)
+    url: https://blog.makgol.com
+    interval: 60
+    max_retries: 3

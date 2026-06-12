@@ -1,0 +1,12 @@
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: keycloak-stage
+  namespace: monitoring
+spec:
+  config:
+    type: http
+    name: keycloak sso (stage)
+    url: https://sso.makgol.com/realms/monthouse
+    interval: 60
+    max_retries: 3

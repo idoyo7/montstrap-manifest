@@ -1,0 +1,13 @@
+# /ping은 oauth2-proxy가 응답 — atlantis 본체가 아니라 SSO 프론트 생존을 본다.
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: atlantis-stage
+  namespace: monitoring
+spec:
+  config:
+    type: http
+    name: atlantis (stage)
+    url: https://atlantis.makgol.com/ping
+    interval: 60
+    max_retries: 3

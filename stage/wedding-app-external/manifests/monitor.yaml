@@ -1,0 +1,12 @@
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: wedding-app-external-stage
+  namespace: wedding-invitation-external
+spec:
+  config:
+    type: http
+    name: wedding-app-external (stage)
+    url: https://us.makgol.com
+    interval: 60
+    max_retries: 3

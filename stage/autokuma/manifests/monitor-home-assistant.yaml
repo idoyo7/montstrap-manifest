@@ -1,0 +1,12 @@
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: home-assistant-stage
+  namespace: monitoring
+spec:
+  config:
+    type: http
+    name: home-assistant (stage)
+    url: https://ha.makgol.com
+    interval: 60
+    max_retries: 3

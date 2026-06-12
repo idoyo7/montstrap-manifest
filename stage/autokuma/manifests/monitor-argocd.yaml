@@ -1,0 +1,13 @@
+# 앱 디렉토리가 없는 플랫폼 서비스 모니터는 autokuma 앱에 모아둔다.
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: argocd-stage
+  namespace: monitoring
+spec:
+  config:
+    type: http
+    name: argocd (stage)
+    url: https://argo.makgol.com/healthz
+    interval: 60
+    max_retries: 3
