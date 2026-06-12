@@ -1,0 +1,12 @@
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: nextra-stage
+  namespace: nextra
+spec:
+  config:
+    type: http
+    name: nextra (stage)
+    url: https://nextra.makgol.com
+    interval: 60
+    max_retries: 3

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autokuma
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: autokuma
+  template:
+    metadata:
+      labels:
+        app: autokuma
+    spec:
+      serviceAccountName: autokuma
+      containers:
+        - name: autokuma
+          image: ghcr.io/bigboot/autokuma:2.0.0
+          env:
+            - name: AUTOKUMA__KUMA__URL
+              value: http://kuma-uptime-kuma.monitoring.svc:3001
+            - name: AUTOKUMA__KUMA__USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: autokuma-credentials
+                  key: username
+            - name: AUTOKUMA__KUMA__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: autokuma-credentials
+                  key: password
+            - name: AUTOKUMA__KUBERNETES__ENABLED
+              value: "true"
+            - name: AUTOKUMA__DOCKER__ENABLED
+              value: "false"
+            - name: AUTOKUMA__FILES__ENABLED
+              value: "false"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: autokuma-data
