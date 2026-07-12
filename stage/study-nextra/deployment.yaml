@@ -30,7 +30,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       containers:
         - name: study-nextra-container
-          image: montkim9/study-nextra:0.1.0
+          image: ghcr.io/idoyo7/study-nextra:latest
           ports:
             - containerPort: 80
           resources:

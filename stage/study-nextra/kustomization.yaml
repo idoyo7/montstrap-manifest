@@ -6,5 +6,5 @@ resources:
   - virtualservice.yaml
   - monitor.yaml
 images:
-  - name: montkim9/study-nextra
-    newTag: "0.1.0"
+  - name: ghcr.io/idoyo7/study-nextra
+    newTag: "fa21a9"

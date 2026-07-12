@@ -30,7 +30,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       containers:
         - name: study-starlight-container
-          image: montkim9/study-starlight:0.1.0
+          image: ghcr.io/idoyo7/study-starlight:latest
           ports:
             - containerPort: 80
           resources:
