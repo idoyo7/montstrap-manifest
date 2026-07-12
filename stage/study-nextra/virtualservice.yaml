@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: study-nextra-virtualservice
+  namespace: study-nextra
+spec:
+  hosts:
+  - study-nextra.makgol.com
+  gateways:
+  - istio-system/makgol-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: study-nextra-service
+        port:
+          number: 80
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s

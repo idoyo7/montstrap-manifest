@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: study-nextra-service
+  namespace: study-nextra
+spec:
+  selector:
+    app: study-nextra
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
