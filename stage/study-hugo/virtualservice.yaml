@@ -6,10 +6,19 @@ metadata:
 spec:
   hosts:
   - study-hugo.makgol.com
+  - hugo.makgol.com
   gateways:
   - istio-system/makgol-gateway
   http:
-  - match:
+  - name: redirect-legacy-host
+    match:
+    - authority:
+        exact: study-hugo.makgol.com
+    redirect:
+      authority: hugo.makgol.com
+      redirectCode: 301
+  - name: serve-hugo
+    match:
     - uri:
         prefix: /
     route:

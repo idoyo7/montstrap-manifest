@@ -7,6 +7,6 @@ spec:
   config:
     type: http
     name: study-hugo (stage)
-    url: https://study-hugo.makgol.com
+    url: https://hugo.makgol.com
     interval: 60
     max_retries: 3
