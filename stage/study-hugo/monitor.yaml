@@ -1,0 +1,12 @@
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: study-hugo-stage
+  namespace: study-hugo
+spec:
+  config:
+    type: http
+    name: study-hugo (stage)
+    url: https://study-hugo.makgol.com
+    interval: 60
+    max_retries: 3
