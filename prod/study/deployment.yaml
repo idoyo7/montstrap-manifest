@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: gitbook
-          image: montkim9/my-gitbook:31ab0a
+          image: montkim9/my-gitbook:bebd9f
           ports:
             - containerPort: 3000
 

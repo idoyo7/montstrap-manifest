@@ -6,4 +6,4 @@ resources:
   - virtualservice.yaml
 images:
   - name: montkim9/my-gitbook
-    newTag: 31ab0a
+    newTag: bebd9f
