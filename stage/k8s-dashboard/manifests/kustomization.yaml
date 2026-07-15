@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - rbac.yaml
+  - deployment.yaml
+  - service.yaml
+  - virtualservice.yaml
+images:
+  # 태그 전용 — k8s-dashboard ci.yml 이 main push 마다 두 이미지 newTag 를 <6자리 SHA>로 bump.
+  - name: montkim9/k8s-dashboard
+    newTag: "9adf28"
+  - name: montkim9/steampipe-k8s
+    newTag: "9adf28"
