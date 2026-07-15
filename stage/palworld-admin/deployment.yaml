@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: palworld-admin
+  namespace: palworld
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: palworld-admin
+  template:
+    metadata:
+      labels:
+        app: palworld-admin
+    spec:
+      serviceAccountName: palworld-admin
+      containers:
+        - name: palworld-admin
+          image: ghcr.io/idoyo7/palworld-admin:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PALWORLD_NAMESPACE
+              value: palworld
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "96Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
