@@ -30,7 +30,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       containers:
         - name: jekyll-container
-          image: montkim9/jekyll:b2d9e4
+          image: montkim9/jekyll:fd1b62
           resources:
             requests:
               cpu: "250m"
