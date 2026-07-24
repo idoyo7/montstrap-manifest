@@ -7,4 +7,4 @@ resources:
   - monitor.yaml
 images:
   - name: idoyo7/nextra-blog
-    newTag: "455507"
+    newTag: "58ce4a"
