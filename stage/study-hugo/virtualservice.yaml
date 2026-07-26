@@ -7,6 +7,7 @@ spec:
   hosts:
   - study-hugo.makgol.com
   - hugo.makgol.com
+  - docs.makgol.com
   gateways:
   - istio-system/makgol-gateway
   http:
