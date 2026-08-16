@@ -7,4 +7,4 @@ resources:
   - monitor.yaml
 images:
   - name: ghcr.io/idoyo7/study-hugo
-    newTag: "c28143"
+    newTag: "5c38e2"
