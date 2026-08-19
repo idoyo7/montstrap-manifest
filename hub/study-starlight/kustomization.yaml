@@ -7,4 +7,4 @@ resources:
   - monitor.yaml
 images:
   - name: ghcr.io/idoyo7/study-starlight
-    newTag: "3fe37a"
+    newTag: "02732f"
