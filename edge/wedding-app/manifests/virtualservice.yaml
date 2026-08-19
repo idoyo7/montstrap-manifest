@@ -21,27 +21,3 @@ spec:
     retries:
       attempts: 3
       perTryTimeout: 10s
-EOF && cat > /Users/mont/evejuni/mont/montstrap-manifest/prod/wedding-app-external/manifests/virtualservice.yaml << 'EOF'
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: wedding-invitation-external-virtualservice
-  namespace: wedding-invitation-external
-spec:
-  hosts:
-  - us.montkim.com
-  gateways:
-  - istio-system/montkim-gateway
-  http:
-  - match:
-    - uri:
-        prefix: /
-    route:
-    - destination:
-        host: wedding-invitation-external-service
-        port:
-          number: 80
-    timeout: 30s
-    retries:
-      attempts: 3
-      perTryTimeout: 10s
