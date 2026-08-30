@@ -9,15 +9,10 @@ spec:
   gateways:
   - istio-system/makgol-gateway
   http:
-  - match:
-    - uri:
-        prefix: /
-    route:
-    - destination:
-        host: jekyll-service
-        port:
-          number: 80
-    timeout: 30s
-    retries:
-      attempts: 3
-      perTryTimeout: 10s
+  # blog.makgol.com 은 구 Jekyll 블로그의 보조 호스트다. 같은 콘텐츠가
+  # montkim.com(메인, Jekyll 페이지들의 canonical 호스트)과 이중 서빙되어
+  # 중복 색인을 만들므로 경로를 보존한 301 로 메인에 합류시킨다.
+  # Jekyll permalink 가 루트 슬러그(/<slug>)라 uri 는 그대로 두면 된다.
+  - redirect:
+      authority: montkim.com
+      redirectCode: 301
