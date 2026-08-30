@@ -7,6 +7,8 @@ spec:
   config:
     type: http
     name: jekyll blog (stage)
-    url: https://blog.makgol.com
+    # blog.makgol.com 은 301 전용 호스트가 되어(중복 색인 정리)
+    # 콘텐츠를 실제 서빙하는 메인 호스트를 본다.
+    url: https://montkim.com
     interval: 60
     max_retries: 3

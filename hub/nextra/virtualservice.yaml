@@ -7,9 +7,20 @@ spec:
   hosts:
   - makgol.com
   - nextra.makgol.com
+  - www.makgol.com
   gateways:
   - istio-system/makgol-gateway
   http:
+  # www.makgol.com 은 어떤 VirtualService 에도 잡혀 있지 않아 게이트웨이가
+  # 와일드카드 TLS 로 받고서 404 를 내던 호스트다. 메인(makgol.com)으로
+  # 경로 보존 301. redirect 와 route 는 한 규칙에 공존할 수 없어 규칙을 분리하고,
+  # authority 매치가 앞에 와야 www 요청이 아래 catch-all route 에 삼켜지지 않는다.
+  - match:
+    - authority:
+        exact: www.makgol.com
+    redirect:
+      authority: makgol.com
+      redirectCode: 301
   - match:
     - uri:
         prefix: /
