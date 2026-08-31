@@ -18,7 +18,9 @@ spec:
           spec:
             properties:
               config:
-                additionalProperties: true
+                # additionalProperties: true는 중첩 객체(예: notification의 provider config)
+                # 필드를 구조적 스키마 pruning으로 잘라낸다 — preserve로 대체
+                x-kubernetes-preserve-unknown-fields: true
                 type: object
             required:
             - config
