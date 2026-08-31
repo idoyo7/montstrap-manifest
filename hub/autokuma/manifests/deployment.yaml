@@ -31,6 +31,20 @@ spec:
               value: "false"
             - name: AUTOKUMA__FILES__ENABLED
               value: "false"
+            # 모든 http 모니터에 telegram 알림(KumaEntity monitoring/telegram)을 기본 적용
+            - name: AUTOKUMA__DEFAULT_SETTINGS
+              value: 'http.notification_name_list: ["telegram"]'
+            # AUTOKUMA__ENV__ 프리픽스만 KumaEntity 템플릿 get_env()에서 접근 허용됨
+            - name: AUTOKUMA__ENV__TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: autokuma-telegram
+                  key: bot-token
+            - name: AUTOKUMA__ENV__TELEGRAM_CHAT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: autokuma-telegram
+                  key: chat-id
           volumeMounts:
             - name: data
               mountPath: /data

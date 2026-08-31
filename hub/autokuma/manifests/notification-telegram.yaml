@@ -1,0 +1,17 @@
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: telegram
+  namespace: monitoring
+spec:
+  config:
+    type: notification
+    name: Telegram
+    active: true
+    is_default: true
+    # 토큰·chat id는 git에 두지 않는다 — autokuma Deployment의
+    # AUTOKUMA__ENV__* env(클러스터 native Secret 참조)에서 렌더링된다
+    config:
+      type: telegram
+      telegramBotToken: "{{ get_env(name='AUTOKUMA__ENV__TELEGRAM_BOT_TOKEN') }}"
+      telegramChatID: "{{ get_env(name='AUTOKUMA__ENV__TELEGRAM_CHAT_ID') }}"
