@@ -15,3 +15,6 @@ spec:
       type: telegram
       telegramBotToken: "{{ get_env(name='AUTOKUMA__ENV__TELEGRAM_BOT_TOKEN') }}"
       telegramChatID: "{{ get_env(name='AUTOKUMA__ENV__TELEGRAM_CHAT_ID') }}"
+      # Kuma 2.x 서버가 저장 시 applyExisting을 덧붙인다 — 여기 없으면
+      # AutoKuma 비교가 매 사이클 불일치로 판정해 5초마다 재업데이트한다
+      applyExisting: false
