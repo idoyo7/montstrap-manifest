@@ -7,4 +7,4 @@ resources:
   - monitor.yaml
 images:
   - name: montkim9/jekyll
-    newTag: "127ba3"
+    newTag: "66cdf8"
