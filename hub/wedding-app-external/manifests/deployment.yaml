@@ -41,6 +41,12 @@ spec:
           env:
             - name: NEXT_PUBLIC_ENABLE_NEXT_IMAGE_OPTIMIZATION
               value: "true"
+          # HyperDX 브라우저 RUM 키 — 앱의 /api/rum-config 가 런타임 env 로 읽어 클라이언트에 넘긴다.
+          # Secret 은 git 밖(hub 클러스터 hyperdx-rum, 키 HYPERDX_API_KEY/HYPERDX_URL). 없으면 RUM 비활성.
+          envFrom:
+            - secretRef:
+                name: hyperdx-rum
+                optional: true
           readinessProbe:
             httpGet:
               path: /
