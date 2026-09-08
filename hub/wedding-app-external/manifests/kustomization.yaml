@@ -7,4 +7,4 @@ resources:
   - monitor.yaml
 images:
   - name: montkim9/invi2
-    newTag: 9a0e2c
+    newTag: 7afb13
