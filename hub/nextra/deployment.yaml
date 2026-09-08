@@ -36,7 +36,7 @@ spec:
           image: idoyo7/nextra-blog:ef553d
           resources:
             requests:
-              cpu: "250m"
+              cpu: "100m"
               memory: "256Mi"
             limits:
               cpu: "500m"

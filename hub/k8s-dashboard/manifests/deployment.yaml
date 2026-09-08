@@ -30,7 +30,7 @@ spec:
           image: montkim9/k8s-dashboard   # tag injected by kustomize (images[].newTag)
           resources:
             requests:
-              cpu: "250m"
+              cpu: "100m"
               memory: "512Mi"
             limits:
               cpu: "1000m"
