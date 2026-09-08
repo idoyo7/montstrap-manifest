@@ -33,7 +33,7 @@ spec:
           image: montkim9/jekyll   # tag injected by kustomize (images[].newTag)
           resources:
             requests:
-              cpu: "250m"
+              cpu: "100m"
               memory: "256Mi"
             limits:
               cpu: "500m"

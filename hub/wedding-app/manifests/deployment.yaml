@@ -33,7 +33,7 @@ spec:
           image: montkim9/invi2
           resources:
             requests:
-              cpu: "250m"
+              cpu: "100m"
               memory: "256Mi"
             limits:
               cpu: "2"
