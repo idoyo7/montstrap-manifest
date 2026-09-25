@@ -28,10 +28,11 @@ spec:
       containers:
         - name: dashboard
           image: montkim9/k8s-dashboard   # tag injected by kustomize (images[].newTag)
+          # 실측(2026-09-25) 5m / 67Mi — 메모리 request 512Mi → 128Mi.
           resources:
             requests:
               cpu: "100m"
-              memory: "512Mi"
+              memory: "128Mi"
             limits:
               cpu: "1000m"
               memory: "1Gi"
@@ -65,10 +66,11 @@ spec:
           env:
             - name: STEAMPIPE_DATABASE_PASSWORD
               value: "steampipe"
+          # 실측(2026-09-25) 10m / 150Mi — 메모리 request 1Gi → 256Mi.
           resources:
             requests:
               cpu: "100m"
-              memory: "1Gi"
+              memory: "256Mi"
             limits:
               cpu: "500m"
               memory: "2Gi"
