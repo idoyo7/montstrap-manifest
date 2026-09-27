@@ -1,4 +1,6 @@
-# /ping은 oauth2-proxy가 응답 — atlantis 본체가 아니라 SSO 프론트 생존을 본다.
+# PR #20에서 atlantis 전용 oauth2-proxy가 제거되고 /ping이 중앙 SSO 정책 뒤로 들어가
+# 매분 403이 되어(2026-09-27~) 외부 URL 대신 클러스터 내부 healthz로 바꿈.
+# atlantis 본체 생존만 본다 — SSO/게이트웨이 경로는 이 모니터로 검증되지 않음.
 apiVersion: autokuma.bigboot.dev/v1
 kind: KumaEntity
 metadata:
@@ -8,6 +10,6 @@ spec:
   config:
     type: http
     name: atlantis (stage)
-    url: https://atlantis.makgol.com/ping
+    url: http://atlantis.atlantis.svc.cluster.local/healthz
     interval: 60
     max_retries: 3
