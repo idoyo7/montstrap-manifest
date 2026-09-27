@@ -10,7 +10,7 @@ metadata:
   name: k8s-dashboard-explorer-readonly
 rules:
   - apiGroups: [""]
-    resources: ["namespaces", "nodes", "pods", "services", "configmaps", "secrets", "persistentvolumeclaims", "events"]
+    resources: ["namespaces", "nodes", "pods", "services", "configmaps", "persistentvolumeclaims", "events"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["apps"]
     resources: ["deployments", "replicasets", "daemonsets", "statefulsets"]
