@@ -31,9 +31,12 @@ spec:
               value: "false"
             - name: AUTOKUMA__FILES__ENABLED
               value: "false"
-            # 모든 http 모니터에 telegram 알림(KumaEntity monitoring/telegram)을 기본 적용
+            # http·push 모니터에 telegram 알림(KumaEntity monitoring/telegram)을 기본 적용
+            # (줄마다 `<type>.<필드>: 값` 한 항목)
             - name: AUTOKUMA__DEFAULT_SETTINGS
-              value: 'http.notification_name_list: ["telegram"]'
+              value: |-
+                http.notification_name_list: ["telegram"]
+                push.notification_name_list: ["telegram"]
             # AUTOKUMA__ENV__ 프리픽스만 KumaEntity 템플릿 get_env()에서 접근 허용됨
             - name: AUTOKUMA__ENV__TELEGRAM_BOT_TOKEN
               valueFrom:
@@ -45,6 +48,26 @@ spec:
                 secretKeyRef:
                   name: autokuma-telegram
                   key: chat-id
+            # edge healthcheck push 모니터 토큰. Secret 이 아직 없어도 파드는 뜬다
+            # (해당 KumaEntity 만 get_env 렌더링 실패로 건너뜀)
+            - name: AUTOKUMA__ENV__PUSH_EDGE_NODE
+              valueFrom:
+                secretKeyRef:
+                  name: autokuma-push-tokens
+                  key: AUTOKUMA__ENV__PUSH_EDGE_NODE
+                  optional: true
+            - name: AUTOKUMA__ENV__PUSH_EDGE_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: autokuma-push-tokens
+                  key: AUTOKUMA__ENV__PUSH_EDGE_CERT
+                  optional: true
+            - name: AUTOKUMA__ENV__PUSH_EDGE_TIMER
+              valueFrom:
+                secretKeyRef:
+                  name: autokuma-push-tokens
+                  key: AUTOKUMA__ENV__PUSH_EDGE_TIMER
+                  optional: true
           volumeMounts:
             - name: data
               mountPath: /data
