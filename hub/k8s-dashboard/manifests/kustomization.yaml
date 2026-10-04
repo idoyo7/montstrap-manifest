@@ -10,6 +10,6 @@ resources:
 images:
   # 태그 전용 — k8s-dashboard ci.yml 이 main push 마다 두 이미지 newTag 를 <6자리 SHA>로 bump.
   - name: montkim9/k8s-dashboard
-    newTag: "703c6b"
+    newTag: "2a2630"
   - name: montkim9/steampipe-k8s
-    newTag: "703c6b"
+    newTag: "2a2630"
