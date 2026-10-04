@@ -1,0 +1,26 @@
+# edge(본가) 고정 주소 감시. DOWN 이거나 DOWN→UP 으로 바뀌면 webhook 이 DNS failover 워크플로를 깨운다.
+# new.montkim.com 은 edge 에 고정된 주소다(montkim.com 은 failover 로 hub 를 가리킬 수 있어 감시 대상이 못 된다).
+# 현재 404 응답이 정상이므로 2xx 와 404 를 허용한다.
+# resend_interval 30: DOWN 이 이어지는 동안 30 번째 heartbeat 마다 알림을 다시 보낸다(telegram 과 webhook 모두).
+# notification_name_list 를 명시하면 Deployment 의 http.notification_name_list 기본값을 덮어쓰므로(명시 설정이
+# 기본값보다 우선) telegram 도 함께 적는다. 다른 모니터에는 webhook 이 붙지 않는다.
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: edge-new-montkim
+  namespace: monitoring
+spec:
+  config:
+    type: http
+    name: edge new.montkim.com
+    url: https://new.montkim.com/
+    interval: 60
+    max_retries: 3
+    retry_interval: 30
+    resend_interval: 30
+    accepted_statuscodes:
+      - 200-299
+      - "404"
+    notification_name_list:
+      - telegram
+      - dns-failover-webhook
