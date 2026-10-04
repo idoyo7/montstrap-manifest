@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gatus
+  namespace: gatus
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  # SQLite + hostPath 라 두 파드가 동시에 같은 파일을 열면 안 된다.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: gatus
+  template:
+    metadata:
+      labels:
+        app: gatus
+    spec:
+      containers:
+        - name: gatus
+          image: twinproduction/gatus:v5.37.0
+          env:
+            # 디렉터리를 지정하면 ConfigMap 갱신(심볼릭 링크 교체)을 Gatus 가 감지해 재로드한다.
+            - name: GATUS_CONFIG_PATH
+              value: /config
+          envFrom:
+            - secretRef:
+                name: gatus-telegram
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: config
+          configMap:
+            name: gatus-config
+        - name: data
+          hostPath:
+            path: /var/lib/gatus
+            type: DirectoryOrCreate
