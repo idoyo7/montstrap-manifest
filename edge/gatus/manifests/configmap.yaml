@@ -49,7 +49,7 @@ data:
         interval: 60s
         conditions:
           - "[STATUS] == 200"
-          - "[BODY] == ok"
+          - "[BODY] == pat(ok*)"   # 본문 끝에 개행이 붙는다
         alerts:
           - type: telegram
             description: "edge 에서 본 hub: ArgoCD(argo.makgol.com) healthz 이상"
@@ -60,7 +60,7 @@ data:
         interval: 60s
         conditions:
           - "[STATUS] == 200"
-          - "[BODY] == OK"
+          - "[BODY] == pat(OK*)"
         alerts:
           - type: telegram
             description: "edge 에서 본 hub: metrics-insert(VictoriaMetrics remote write 입구) health 이상"
