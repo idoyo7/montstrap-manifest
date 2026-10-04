@@ -48,7 +48,7 @@ spec:
                 secretKeyRef:
                   name: autokuma-telegram
                   key: chat-id
-            # edge healthcheck push 모니터 토큰. Secret 이 아직 없어도 파드는 뜬다
+            # edge·hub healthcheck push 모니터 토큰. Secret 이 아직 없어도 파드는 뜬다
             # (해당 KumaEntity 만 get_env 렌더링 실패로 건너뜀)
             - name: AUTOKUMA__ENV__PUSH_EDGE_NODE
               valueFrom:
@@ -67,6 +67,18 @@ spec:
                 secretKeyRef:
                   name: autokuma-push-tokens
                   key: AUTOKUMA__ENV__PUSH_EDGE_TIMER
+                  optional: true
+            - name: AUTOKUMA__ENV__PUSH_HUB_NODE
+              valueFrom:
+                secretKeyRef:
+                  name: autokuma-push-tokens
+                  key: AUTOKUMA__ENV__PUSH_HUB_NODE
+                  optional: true
+            - name: AUTOKUMA__ENV__PUSH_HUB_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: autokuma-push-tokens
+                  key: AUTOKUMA__ENV__PUSH_HUB_CERT
                   optional: true
           volumeMounts:
             - name: data
