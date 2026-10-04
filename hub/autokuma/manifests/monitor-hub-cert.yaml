@@ -1,0 +1,19 @@
+# hub 클러스터 점검 결과를 받는 push 모니터. AWX 잡 템플릿 hub-healthcheck 가
+# 10분마다 /api/push/<token> 으로 보낸다(awxplaybook README 참고).
+# interval 900 + max_retries 1 + retry_interval 900: push 가 연속 2번 누락되면 down.
+# 토큰은 git 에 두지 않는다 — Secret monitoring/autokuma-push-tokens 를 autokuma Deployment 가
+# AUTOKUMA__ENV__* env 로 읽고, 아래 템플릿이 렌더링한다. 토큰은 영문·숫자 32자여야 한다.
+# 알림은 Deployment 의 AUTOKUMA__DEFAULT_SETTINGS(push.notification_name_list)로 telegram 이 걸린다.
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: hub-cert-expiry
+  namespace: monitoring
+spec:
+  config:
+    type: push
+    name: hub apiserver cert expiry
+    push_token: "{{ get_env(name='AUTOKUMA__ENV__PUSH_HUB_CERT') }}"
+    interval: 900
+    max_retries: 1
+    retry_interval: 900
