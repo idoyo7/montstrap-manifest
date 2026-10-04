@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gatus-config
+  namespace: gatus
+data:
+  config.yaml: |
+    # edge 클러스터에서 hub 클러스터를 바깥쪽(공개 URL)으로 감시한다.
+    # 토큰·chat id 는 Secret gatus-telegram 의 환경변수로 주입된다.
+    storage:
+      type: sqlite
+      path: /data/gatus.db
+
+    alerting:
+      telegram:
+        token: "${TELEGRAM_BOT_TOKEN}"
+        id: "${TELEGRAM_CHAT_ID}"
+        default-alert:
+          description: "edge 에서 본 hub 점검 실패"
+          failure-threshold: 3
+          success-threshold: 2
+          send-on-resolved: true
+
+    endpoints:
+      - name: hub gateway
+        group: hub
+        url: "https://makgol.com/"
+        interval: 60s
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
+            description: "edge 에서 본 hub: 게이트웨이/블로그(makgol.com) 응답 이상"
+
+      - name: hub keycloak
+        group: hub
+        url: "https://sso.makgol.com/realms/monthouse"
+        interval: 60s
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY].realm == monthouse"
+        alerts:
+          - type: telegram
+            description: "edge 에서 본 hub: Keycloak(sso.makgol.com, realm monthouse) 응답 이상"
+
+      - name: hub argocd
+        group: hub
+        url: "https://argo.makgol.com/healthz"
+        interval: 60s
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY] == ok"
+        alerts:
+          - type: telegram
+            description: "edge 에서 본 hub: ArgoCD(argo.makgol.com) healthz 이상"
+
+      - name: hub metrics-insert
+        group: hub
+        url: "https://metrics-insert.makgol.com/health"
+        interval: 60s
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY] == OK"
+        alerts:
+          - type: telegram
+            description: "edge 에서 본 hub: metrics-insert(VictoriaMetrics remote write 입구) health 이상"
+
+      # kuma 는 SSO 뒤라 무인증으로 닿는 경로가 /api/push/* 뿐이다.
+      # 존재하지 않는 토큰으로 찔러 Kuma 앱이 직접 답하는 404 JSON 을 "살아 있음"으로 본다.
+      - name: hub kuma
+        group: hub
+        url: "https://kuma.makgol.com/api/push/gatusprobe"
+        interval: 60s
+        conditions:
+          - "[STATUS] == 404"
+          - "[BODY].ok == false"
+        alerts:
+          - type: telegram
+            description: "edge 에서 본 hub: Uptime Kuma(kuma.makgol.com) 앱 응답 이상"
