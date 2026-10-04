@@ -1,0 +1,19 @@
+# DNS failover 워크플로(idoyo7/montkim-dns-failover)의 결과 수신용 push 모니터.
+# 워크플로가 매시 17분에 돌고 끝에서 /api/push/<token>?status=up|down 을 보낸다.
+# interval 7500(약 2시간 5분) + max_retries 0: 한 시간 주기 push 가 한 번 이상 누락되면 down — 워크플로 정지 감지.
+# 토큰은 git 에 두지 않는다 — Secret monitoring/autokuma-push-tokens 를 autokuma Deployment 가
+# AUTOKUMA__ENV__PUSH_DNS_FAILOVER env 로 읽고, 아래 템플릿이 렌더링한다. 토큰은 영문·숫자 32자여야 한다.
+# 알림은 Deployment 의 AUTOKUMA__DEFAULT_SETTINGS(push.notification_name_list)로 telegram 만 걸린다.
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: dns-failover-result
+  namespace: monitoring
+spec:
+  config:
+    type: push
+    name: dns failover workflow
+    push_token: "{{ get_env(name='AUTOKUMA__ENV__PUSH_DNS_FAILOVER') }}"
+    interval: 7500
+    max_retries: 0
+    retry_interval: 7500
