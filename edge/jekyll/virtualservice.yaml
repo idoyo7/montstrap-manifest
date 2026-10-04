@@ -6,10 +6,20 @@ metadata:
 spec:
   hosts:
   - montkim.com
+  - www.montkim.com
   - blog.montkim.com
   gateways:
   - istio-system/montkim-gateway
   http:
+  # www 는 보조 호스트다. 페이지 canonical 이 montkim.com 이라 같은 내용을 이중 서빙하지 않고
+  # 경로 보존 301 로 합류시킨다(hub 의 jekyll-montkim VirtualService 와 같은 동작).
+  # redirect 와 route 는 한 규칙에 공존할 수 없어 분리했고, catch-all route 보다 앞에 둔다.
+  - match:
+    - authority:
+        exact: www.montkim.com
+    redirect:
+      authority: montkim.com
+      redirectCode: 301
   - match:
     - uri:
         prefix: /
