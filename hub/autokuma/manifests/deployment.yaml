@@ -88,12 +88,6 @@ spec:
                   name: autokuma-github-dispatch
                   key: token
                   optional: true
-            - name: AUTOKUMA__ENV__PUSH_DNS_FAILOVER
-              valueFrom:
-                secretKeyRef:
-                  name: autokuma-push-tokens
-                  key: AUTOKUMA__ENV__PUSH_DNS_FAILOVER
-                  optional: true
           volumeMounts:
             - name: data
               mountPath: /data
