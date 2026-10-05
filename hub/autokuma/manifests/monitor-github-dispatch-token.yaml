@@ -7,6 +7,10 @@
 #   GET /repos/<전용 레포>/actions/workflows/dns-failover.yml 은 토큰이 유효하고 레포 권한이 있으면
 #   200 과 "state":"active" 를 포함한 JSON 을 준다. 토큰이 틀리면 401, 권한이 없으면 404 다.
 #   토큰은 webhook 알림과 같은 Secret(monitoring/autokuma-github-dispatch)을 get_env 로 렌더링한다(git 에 없다).
+#   저장 위치: 렌더링된 토큰이 Kuma DB 의 알림 설정(webhookAdditionalHeaders)과 이 모니터의 headers 두 곳에 평문으로
+#   저장된다. 관리자에게 UI 로 보이고 Kuma DB 백업에도 들어간다. 토큰을 교체하면 Secret 교체 뒤 autokuma 재시작으로
+#   두 곳이 함께 갱신되는지 확인한다.
+#   로그: Kuma 를 debug 로그 수준으로 올리면 요청 옵션(Authorization 헤더 포함)이 로그에 찍힌다. 기본 수준에서는 안 찍힌다.
 #
 # 언제 DOWN 이 되나(평소에는 울리지 않는다):
 #   - 토큰 만료·폐기: 401. accepted_statuscodes 가 200-299 뿐이라 JSON 평가 전에 요청 실패로 DOWN 이다.
@@ -18,6 +22,7 @@
 # 못 잡는 것:
 #   - 만료 전 예고는 못 한다. 만료되고 나서 다음 확인(최대 1시간 뒤, 재시도 포함 약 1시간 15분) 때 알린다.
 #   - webhook 알림 설정 자체의 오류(본문·URL·헤더)는 못 잡는다. 이 모니터는 읽기 요청이라 dispatches 호출은 검증하지 않는다.
+#   - 도메인 만료 알림(Kuma 의 domain_expiry_notification, DB 기본값 1)은 AutoKuma 에 필드가 없어 끌 수 없다. 이 모니터의 범위 밖이다.
 #   - 토큰이 Actions 읽기만 있고 쓰기가 없는 경우(읽기는 200, dispatch 는 403)도 못 잡는다.
 #
 # 필드 근거:
