@@ -8,8 +8,10 @@
 # DNS 가 edge 로 돌아오면 UP 이 되어 재시도가 멈춘다(문제가 없을 때는 아무것도 보내지 않는다).
 #
 # 확인 방식(invert_keyword)과 max_retries 의 이유는 dns-serving-site 머리 주석과 같다.
-# 모니터 생성 직후 첫 heartbeat 는 상태와 무관하게 알림을 보내므로(Uptime Kuma 의 isFirstBeat) 생성 때
-# 워크플로가 한 번 실행되는데, edge 서빙 중이면 "변경 없음" 으로 끝난다.
+# 첫 heartbeat 가 UP 이면 알림을 보내지 않는다(Uptime Kuma monitor.js sendNotification). 그래서 edge 서빙 중에
+# 만들면 생성 때 워크플로 실행도 알림도 없다. DNS 가 이미 hub 인 상태에서 만들면 재시도 3회 뒤 DOWN 에서 처음 보낸다.
+# 생성 확인은 알림이 아니라 autokuma 로그와 Kuma 화면으로 한다.
+# expiry_notification false: dns.google 인증서 만료 임박 때 webhook(워크플로 실행)이 나가지 않게 한다(평소 무알림).
 # type 이 keyword 라 Deployment 의 기본 알림(http·push 의 telegram)이 붙지 않으므로 telegram 은 붙지 않는다.
 apiVersion: autokuma.bigboot.dev/v1
 kind: KumaEntity
@@ -29,5 +31,6 @@ spec:
     max_retries: 3
     retry_interval: 60
     resend_interval: 30
+    expiry_notification: false
     notification_name_list:
       - dns-failover-webhook

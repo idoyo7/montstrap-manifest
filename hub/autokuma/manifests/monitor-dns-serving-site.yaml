@@ -1,5 +1,9 @@
 # DNS failover 의 "전환 상태" 모니터. 공개 DNS(DoH)가 montkim.com 의 apex 를 어느 쪽으로 답하는지 직접 본다.
 # 이 모니터가 "hub 로 전환 1번, edge 로 복귀 1번" 알림(telegram)을 낸다. 평소(edge 서빙)에는 UP 이라 울리지 않는다.
+# 사람이 받는 Telegram 은 이 모니터만 센 값이다. edge-new-montkim 의 DOWN/UP 알림과 DOWN 중 30분 재알림(telegram)은 따로 온다.
+# 공개 DNS 조회(DoH) 자체가 약 3분 넘게 실패하면 전환이 없어도 이 모니터가 DOWN/UP 을 낸다.
+# 첫 heartbeat 가 UP 이면 알림을 보내지 않는다(생성 직후 알림 없음이 정상).
+# expiry_notification false: dns.google 인증서 만료 임박 때 telegram 이 울리지 않게 한다.
 #
 # 무엇을 보고 언제 DOWN 이 되나:
 #   응답 본문에 hub IP(110.8.191.30)가 들어 있으면 DOWN, 없으면 UP 이다(invert_keyword: true).
@@ -33,5 +37,6 @@ spec:
     max_retries: 3
     retry_interval: 60
     resend_interval: 0
+    expiry_notification: false
     notification_name_list:
       - telegram
