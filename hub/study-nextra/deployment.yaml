@@ -27,7 +27,27 @@ spec:
                 labelSelector:
                   matchLabels:
                     app: study-nextra
+                # 롤링 업데이트 중 옛 ReplicaSet 파드는 세지 않는다
+                matchLabelKeys:
+                  - pod-template-hash
                 topologyKey: "kubernetes.io/hostname"
+      # 노드 분할: node1·node2 에 하나씩. node2 가 없으면 node1 로 돌아온다(ScheduleAnyway)
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          nodeTaintsPolicy: Honor
+          labelSelector:
+            matchLabels:
+              app: study-nextra
+          matchLabelKeys:
+            - pod-template-hash
+      # node2 편입 taint — 풀린 뒤에도 무해
+      tolerations:
+        - key: node.monthouse/state
+          operator: Equal
+          value: onboarding
+          effect: NoSchedule
       containers:
         - name: study-nextra-container
           image: ghcr.io/idoyo7/study-nextra:latest
