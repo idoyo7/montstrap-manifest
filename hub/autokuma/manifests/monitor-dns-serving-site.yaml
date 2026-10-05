@@ -1,0 +1,42 @@
+# DNS failover 의 "전환 상태" 모니터. 공개 DNS(DoH)가 montkim.com 의 apex 를 어느 쪽으로 답하는지 직접 본다.
+# 이 모니터가 "hub 로 전환 1번, edge 로 복귀 1번" 알림(telegram)을 낸다. 평소(edge 서빙)에는 UP 이라 울리지 않는다.
+# 사람이 받는 Telegram 은 이 모니터만 센 값이다. edge-new-montkim 의 DOWN/UP 알림과 DOWN 중 30분 재알림(telegram)은 따로 온다.
+# 공개 DNS 조회(DoH) 자체가 약 3분 넘게 실패하면 전환이 없어도 이 모니터가 DOWN/UP 을 낸다.
+# 첫 heartbeat 가 UP 이면 알림을 보내지 않는다(생성 직후 알림 없음이 정상).
+# expiry_notification false: dns.google 인증서 만료 임박 때 telegram 이 울리지 않게 한다.
+#
+# 무엇을 보고 언제 DOWN 이 되나:
+#   응답 본문에 hub IP(110.8.191.30)가 들어 있으면 DOWN, 없으면 UP 이다(invert_keyword: true).
+#   DNS 가 hub 를 가리킨다 = DNS failover 가 일어나 hub 가 서빙 중이라는 뜻이다.
+#
+# 왜 hub IP 를 invert 로 보나:
+#   edge IP 가 "있는지"로 보면 DoH 응답이 비정상일 때(빈 Answer, 다른 값)도 DOWN 이 되므로 DOWN 의 뜻이 흐려진다.
+#   hub IP 가 "있는지"로 보면 DOWN 은 "hub 로 넘어갔다"로 한정된다.
+#   요청 자체가 실패하면(DoH 접속 불가, 5xx 등) 어느 쪽 방식이든 DOWN 이므로, max_retries 3 으로 완충한다
+#   (60초 간격으로 3번 더 확인한 뒤에야 DOWN 이 된다).
+#
+# 알림 설정: Deployment 의 AUTOKUMA__DEFAULT_SETTINGS 는 http·push 타입에만 telegram 을 붙인다.
+# 이 모니터의 type 은 keyword 라 기본값이 적용되지 않으므로 notification_name_list 를 명시한다.
+# resend_interval 0: DNS 가 hub 인 동안 재알림 없음(알림은 전환 때와 복귀 때 한 번씩이다).
+# DoH 응답은 캐시(TTL 300)될 수 있어 전환·복귀가 알림에 반영되기까지 몇 분 늦을 수 있다.
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: dns-serving-site
+  namespace: monitoring
+spec:
+  config:
+    type: keyword
+    name: dns failover 전환 상태
+    url: https://dns.google/resolve?name=montkim.com&type=A
+    keyword: 110.8.191.30
+    invert_keyword: true
+    accepted_statuscodes:
+      - 200-299
+    interval: 60
+    max_retries: 3
+    retry_interval: 60
+    resend_interval: 0
+    expiry_notification: false
+    notification_name_list:
+      - telegram
