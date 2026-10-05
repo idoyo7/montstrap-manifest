@@ -4,7 +4,8 @@ resources:
   - deployment.yaml
   - service.yaml
   - virtualservice.yaml
-  - monitor.yaml
+  # 일시 중지 동안 Kuma 모니터를 뺀다 — replicas 0 이라 켜 두면 계속 down 알림이 난다
+  # - monitor.yaml
 images:
   - name: ghcr.io/idoyo7/study-nextra
     newTag: "291c3b"

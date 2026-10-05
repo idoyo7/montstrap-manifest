@@ -4,7 +4,9 @@ metadata:
   name: study-nextra-deployment
   namespace: study-nextra
 spec:
-  replicas: 2
+  # 일시 중지(2026-10-05) — 사이트를 내려 둔다. 되살릴 때는 replicas 를 2 로 되돌리고
+  # kustomization.yaml 의 monitor.yaml 주석을 푼다.
+  replicas: 0
   revisionHistoryLimit: 2
   strategy:
     type: RollingUpdate
