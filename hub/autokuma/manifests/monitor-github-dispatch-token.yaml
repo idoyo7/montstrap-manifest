@@ -1,0 +1,57 @@
+# DNS failover 의 workflow_dispatch 토큰(fine-grained PAT, 전용 레포 Actions 읽기·쓰기)이 살아 있는지 보는 모니터.
+# 왜 필요한가: 예약 실행(schedule)을 없애 hub 의 Kuma 가 webhook(dns-failover-webhook)으로 워크플로를 깨우는 길이
+# 하나뿐이다. 이 토큰이 만료·폐기되거나 레포 권한을 잃으면 전환 장치가 조용히 멈추고, Kuma 는 알림 전송 실패를 로그에만 남긴다.
+# 즉 토큰이 단일 실패점이라, 토큰 자체를 따로 감시한다.
+#
+# 무엇을 보나: 같은 토큰으로 GitHub API 에 읽기 요청만 보낸다(워크플로는 실행하지 않는다).
+#   GET /repos/<전용 레포>/actions/workflows/dns-failover.yml 은 토큰이 유효하고 레포 권한이 있으면
+#   200 과 "state":"active" 를 포함한 JSON 을 준다. 토큰이 틀리면 401, 권한이 없으면 404 다.
+#   토큰은 webhook 알림과 같은 Secret(monitoring/autokuma-github-dispatch)을 get_env 로 렌더링한다(git 에 없다).
+#
+# 언제 DOWN 이 되나(평소에는 울리지 않는다):
+#   - 토큰 만료·폐기: 401. accepted_statuscodes 가 200-299 뿐이라 JSON 평가 전에 요청 실패로 DOWN 이다.
+#   - 레포 권한 상실: 404. 위와 같다.
+#   - 워크플로 비활성화: state 가 active 가 아니면 "JSON query does not pass" 로 DOWN 이다.
+#   - GitHub API 가 길게 실패(5xx, 접속 불가): 일시 실패는 무시한다. interval 3600 에 max_retries 3,
+#     retry_interval 300 이라 15분 넘게 이어져야 DOWN 이다.
+#
+# 못 잡는 것:
+#   - 만료 전 예고는 못 한다. 만료되고 나서 다음 확인(최대 1시간 뒤, 재시도 포함 약 1시간 15분) 때 알린다.
+#   - webhook 알림 설정 자체의 오류(본문·URL·헤더)는 못 잡는다. 이 모니터는 읽기 요청이라 dispatches 호출은 검증하지 않는다.
+#   - 토큰이 Actions 읽기만 있고 쓰기가 없는 경우(읽기는 200, dispatch 는 403)도 못 잡는다.
+#
+# 필드 근거:
+#   - AutoKuma v2.0.0 kuma-client/src/models/monitor.rs 의 MonitorJsonQuery: json_path, json_path_operator,
+#     expected_value(문자열·숫자), headers(String, JSON 문자열 하나), accepted_statuscodes.
+#   - json_path_operator 는 Option 이라 생략하면 값이 비어 Kuma 가 "Invalid condition" 으로 실패한다. 그래서 "==" 를 명시한다.
+#   - Uptime Kuma 2.5.5 의 json-query 는 src/util.js evaluateJsonQuery 가 jsonata 로 state 를 뽑아 문자열로 비교한다.
+#     HTTP 상태가 accepted_statuscodes 밖이면 axios 가 먼저 예외를 던져 JSON 평가에 가지 않는다(server/model/monitor.js).
+#   - User-Agent: Kuma 는 헤더에 넣지 않지만 axios 0.32 http 어댑터가 없으면 axios/<버전> 을 채운다(GitHub API 는 UA 필수).
+#   - 헤더 따옴표 이스케이프와 get_env 는 notification-dns-failover-webhook.yaml 과 같은 방식이다.
+#
+# 알림 설정: Deployment 의 AUTOKUMA__DEFAULT_SETTINGS 는 http·push 타입에만 telegram 을 붙인다.
+# 이 모니터의 type 은 json-query 라 기본값이 적용되지 않으므로 notification_name_list 를 명시한다.
+# resend_interval 0: DOWN 이 이어져도 재알림 없음. expiry_notification false: api.github.com 인증서 만료 알림 차단.
+apiVersion: autokuma.bigboot.dev/v1
+kind: KumaEntity
+metadata:
+  name: github-dispatch-token
+  namespace: monitoring
+spec:
+  config:
+    type: json-query
+    name: github dispatch 토큰
+    url: https://api.github.com/repos/idoyo7/montkim-dns-failover/actions/workflows/dns-failover.yml
+    json_path: state
+    json_path_operator: "=="
+    expected_value: active
+    headers: "{\"Authorization\": \"Bearer {{ get_env(name='AUTOKUMA__ENV__GITHUB_DISPATCH_TOKEN') }}\", \"Accept\": \"application/vnd.github+json\", \"X-GitHub-Api-Version\": \"2022-11-28\"}"
+    accepted_statuscodes:
+      - 200-299
+    interval: 3600
+    max_retries: 3
+    retry_interval: 300
+    resend_interval: 0
+    expiry_notification: false
+    notification_name_list:
+      - telegram
