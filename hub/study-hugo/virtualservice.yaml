@@ -11,12 +11,17 @@ spec:
   gateways:
   - istio-system/makgol-gateway
   http:
+  # 구 호스트 둘을 정식 호스트 docs 로 301. hugo.makgol.com 이 200 으로 같은 내용을
+  # 서빙하는 동안 Google 이 canonical 태그를 무시하고 hugo 쪽을 색인해 docs 페이지가
+  # "크롤링됨 - 색인 안 됨"(중복) 판정을 받았다 (2026-09-11 URL Inspection 실측).
   - name: redirect-legacy-host
     match:
     - authority:
         exact: study-hugo.makgol.com
+    - authority:
+        exact: hugo.makgol.com
     redirect:
-      authority: hugo.makgol.com
+      authority: docs.makgol.com
       redirectCode: 301
   - name: serve-hugo
     match:
