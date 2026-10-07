@@ -11,12 +11,16 @@ spec:
   gateways:
   - istio-system/makgol-gateway
   http:
+  # 구 호스트 둘은 정식 호스트 docs.makgol.com 으로 한 번에 보낸다.
+  # redirect 에 uri 를 두지 않아 경로와 쿼리는 그대로 간다.
   - name: redirect-legacy-host
     match:
     - authority:
         exact: study-hugo.makgol.com
+    - authority:
+        exact: hugo.makgol.com
     redirect:
-      authority: hugo.makgol.com
+      authority: docs.makgol.com
       redirectCode: 301
   - name: serve-hugo
     match:
