@@ -8,4 +8,4 @@ resources:
   # - monitor.yaml
 images:
   - name: ghcr.io/idoyo7/study-nextra
-    newTag: "291c3b"
+    newTag: "f7ac06"
