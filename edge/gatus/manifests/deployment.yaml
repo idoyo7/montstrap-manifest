@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: gatus
-          image: twinproduction/gatus:v5.37.0
+          image: twinproduction/gatus:v5.38.0
           env:
             # 디렉터리를 지정하면 ConfigMap 갱신(심볼릭 링크 교체)을 Gatus 가 감지해 재로드한다.
             - name: GATUS_CONFIG_PATH
