@@ -30,7 +30,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       containers:
         - name: nextra-container
-          image: idoyo7/nextra-blog:8594bd
+          image: idoyo7/nextra-blog:2a56d0
           resources:
             requests:
               cpu: "250m"
